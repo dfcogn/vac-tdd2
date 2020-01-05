@@ -1,0 +1,71 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:2.2.2.RELEASE"
+    }
+}
+
+plugins {
+    id 'org.springframework.boot' version '2.2.2.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.8.RELEASE'
+    id 'java'
+}
+
+group = 'com.example'
+version = ''
+sourceCompatibility = '1.8'
+
+repositories {
+    mavenCentral()
+}
+
+configurations {
+    providedRuntime
+}
+
+dependencies {
+    compile ('org.springframework.boot:spring-boot-starter-data-redis-reactive')
+    compile ('org.springframework.boot:spring-boot-starter-web')
+    // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-redis
+    compile (group: 'org.springframework.boot', name: 'spring-boot-starter-data-redis', version: '1.5.0.RELEASE')
+
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+    testImplementation 'io.projectreactor:reactor-test'
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    // https://mvnrepository.com/artifact/org.hamcrest/hamcrest-all
+    testCompile group: 'org.hamcrest', name: 'hamcrest-all', version: '1.3'
+
+}
+dependencyManagement {
+    imports {
+        org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES
+    }
+}
+
+test {
+    useJUnitPlatform()
+}
+jar {
+    enabled = true
+}
+bootJar {
+    mainClassName = 'com.example.redisTDD2.RedisTdd2Application'
+    manifest {
+        attributes 'Start-Class': 'com.example.redisTDD2.RedisTdd2Application'
+    }
+    launchScript()
+}
+
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'com.example.redisTDD2.RedisTdd2Application'
+    }
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+}
+
+
